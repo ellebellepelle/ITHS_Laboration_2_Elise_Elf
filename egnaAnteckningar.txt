@@ -1,0 +1,26 @@
+* skapar ENUM TransactionType i me.ellebelle-paketet
+* Denna enum (TransactionType) är en bestämd lista över vilka typer en transaktion får ha.
+  TransactionType är inte själva inkomsten eller utgiften. Den skall spara transaktioner (en ekonomisk händelse).
+  ex. får 25000 kr i lön eller betalar 800 kr i mat. Jag behöver enumen med inkomst och utgift för att programmet
+  behöver veta om transaktionen (pengarna) skall läggas till (inkomst) eller dras bort (utgift) från saldot.
+  Därför behöver (senare) varje Transaction innehålla information om vilken typ av transaktion det är (, inkomst
+  eller utgift). Det är detta som TransactionType ska representera. ex:
+  2026-10-04, Lön, 25000 kr, INKOMST   -- 2026-10-04, Mat, 800 kr, UTGIFT
+  programmet kan sedan räkna: 25000 - 800 = 24200 kr.
+* Gör ingen commit ännu eftersom TransactionType hör ihop med nästa del: Transaction
+* Skapar en record Transaction som skall lagra data. Mina transaktioner behöver:
+  datum -> när transaktionen skedda
+  kategori -> vad pengarna hör till, ex "Mat", "Lön", "Hyra" etc
+  belopp -> hur mycket pengar det handlar om
+  transaktionstyp -> om pengarna är en INKOMST eller UTGIFT
+* När jag lagrar datumet så använder jag LocalDate ist för String för att den är till för just datum. + importetar den.
+* När jag senare skapar en transaktion får TransactionType bara vara INKOMST eller UTGIFT
+* Jag har nu gjort en liten sammanhängande del: domänmodellen för en transaktion.
+* Jag kör nu programmet/bygger projektet för att se så där inte är några fel. I huvudmenyn: Build -> Build Project.
+  (den gröna pilen betyder "kör programmet" den kräver att jag har något körbart, normalt en main-metod men jag har
+  inte byggt själva programmet ännu så den kan jag inte trycka på.
+  Build Project betyder: IntelliJ, kontrollera att projektets kod går att kompilera. Då upptäcks ex om Transaction
+  eller TransactionType innehåller kompileringsfel.)
+* Jag har ännu inte JUnit-testat eftersom denna record inte har någon egentlig logik att testa.
+* Jag lörde build project och fick inga fel, jag fick min target-mapp under src som skapades nu när Maven/IntelliJ
+  byggde projektet, där i hamnade bla de kompilerade versionerna av mina Java-filer.
