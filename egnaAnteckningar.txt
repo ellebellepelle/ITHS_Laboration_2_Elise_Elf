@@ -24,3 +24,69 @@
 * Jag har ännu inte JUnit-testat eftersom denna record inte har någon egentlig logik att testa.
 * Jag lörde build project och fick inga fel, jag fick min target-mapp under src som skapades nu när Maven/IntelliJ
   byggde projektet, där i hamnade bla de kompilerade versionerna av mina Java-filer.
+
+=============== Commit - Add transaction domain model =================
+
+* Nu har jag bestämt hur en Transaction ser ut , men jag har fortfarande ingenstans att spara transaktionerna.
+  Jag skapar därför en klass Repository som skall vara generisk, dvs: Repository<T> och dess uppgift blir att lagra
+  och hantera objekt, jag kan sedan göra ex: Repository<Transaction> eller Repository<String> osv för den generiska
+  klassen blir återanvändbar eftersom jag kan lagra viken objekttyp jag vill som jag bestämmer när jag använder den.
+* En Repository<T>  är en generisk klass som jag skapar för att kunna lagra och hantera objekt utan att Repostiory-
+  klassen behöver vara skriven för en bestämd typ av objekt. Inuti Repository har jag en ArrayList<T>, och det är i
+  den listen som objekten faktiskt lagras. När jag senare skapar och använder ett Repository<Transaction> bestämmer
+  jag att <T> ska betyda Transaction för just det Repository-objektet. ArrayListen i den Repositoryt kommer därför
+  bara innehålla Transaction-objekt. Den första transaktionen hamnar i listan, sendan kan nästa transaktion läggas
+  till osv. Java ser samtidigt till att jag inte av misstag kan lägga in ex ett User-objekt i just den listan,
+  eftersom Repositoryt har bestämts till att arbeta med Transaktion.
+
+  Om mitt program även hade haft användare skuklle jag först behöva ha någon typ som bekriver en användare, ex en
+  User-klsas eller en User-record. Den kanske hade innehållit information som namn och användar ID. Jag skulle då kunna
+  skapa ett annat Repository där T istället är User. Det Repositoryt skulle ha sin egen ArrayList som bara innehåller
+  User-objket. Jag har alltså inte en anda ArrayList där Uers och Transactions balndas. Jag har två olika Repositor-
+  objekt som båda bygger på samma generiska Repository<T>-klass, men där T har fått olika betydelse.
+
+  Det smarta är sedan att metoderna som jag skriver i Repository<T> också använder T. Jag kan ex skapa en add-metod
+  för att lägga till objekt, en findAll-metod för att hämta alla objekt och en findWhere-metod för att hitta de objekt
+  som uppfyller ett vissst villkor. Jag skulle även kunna ha ex en metod för att ta bort ett objekt eller konteollera
+  hur många objekt som finns.
+
+  Efterom metoderna arbetar med T behöver jag inte skriva en särskilld addTransaction och sedan en nästan identisk
+  addUser. Jag skriver den generelle add-metoden en gång i Repository<T>. När den används på mitt Repoitory<Transaction>
+  betyder den i praktiken "lägg till en Transaktion". När samma metod används på mitt Repository<User> betyder den
+  istället "lägg till en User".
+
+  Det är alltså den stora poängen med generics finns: jag kriver Repository-klassen och dess grundläggande funktioner
+  en gång men kan återanvända dem för olika typer av objekt på ett typsäkert sätt.
+* Skapar ett fält i Repository<T> klasen som har datadypen ArrayList<T>, fältets variabel är items.
+  Repository<T> är klassen som skall hantera objekten. items är ArrayListen innuti Repository där objekten faktiskt
+  förvaras. items är ett fält, och fältet innehåller/refererar till den ArrayList där Repository ska lagra sina objekt.
+* Skapar en generisk metod som tar emot ett objekt av samma typen som Repoitory har fått. Om jag senare har ett
+  Repoitory<Transaction>, är T = Transaction. Då kan add() ta emot en Transaction och lägga den i ArryaListen. Hade jag
+  haft en Repository<User>, hade samma add() tagit emot en User.
+* Jag har en Repository-klass runt ArrayListen för att resten av programmet ska kunna arbeta genom mina Repository-
+  metoder medan själva listan hålls privat.
+* Skapar en generisk metod, findAll(), som andra delar av programmet senare kommer behöva för att fråga Repositoryt: "vilka objekt
+  har du lagrat". Metoden skall alltså lämna tillbaka litan med alla objket. Returtypen blir List<T> för att metoden
+  lämnar tillbaka en lista med objekt. (samma typ av objekt som Repository arbetar med.) Om jag har Tepository<Transa-
+  ction>, kommer findAll() lämna tillbaka en lista med Transaktioner. Jag skriver List ist för ArrayList för att Array-
+  List implementerar List.
+* Skapar en generisk metod, findWhere(...), som bara ger de objekt som uppfyller ett vit villkor. I min budgethanterare
+  kanske Repository innehåller 50 transaktioner, jag vill kanske kunna hitta alla UTGIFTER, alla INKOMSTER eller alla
+  transaktioner över 1000 kr. Jag vill inte bygga 3 olika metoder för i Repositoryt för detta, Repository vet inte ens
+  vad amount eller TransactionType är - den arbetar bara med T. Denna metod använder Predicate och lamba. Jag använder
+  Predicate<T> som betyder: att metoden tar emot ett villkor som kan tetas på ett objekt av typen T och ge svaret sant
+  eller falskt. Om T är Transaction kan jag senare skicka in ett villkor som betyder exempelvis "är den här transaktio-
+  nen en UTGIFT?". Repository går då igenom sina objekt och tar med dem där svaret blir true. Det är här lambda kommer
+  in senare, lambdan är ett smidigt sätt att skicka själva villkoret till findWhere().
+
+  Metoden går igenom alla objekt som finns i items, kontrollerar varje objekt mot villkoret jag fått in och sparar de
+  objekt där villkoret är true. Jag behöver därför en ny tom lista där jag kan lägga träffarna. (Den listan skapar
+  alltså inte ett nytt Repository, det är bara en tillfällig lista som ska innehålla sökresultatet. Sedan går jag igenom
+  alla objekt som redan finns i items med hjälp av en enhanced for-loop (foreach) (datatypen i loopen är T). Sen kontr-
+  ollerar jag om det aktuella objektet uppfyller mitt Predicate, det gör jag med test() i en if-sats.
+  condiction.test(item) ger alltså antingen true eller false. Är svaret true lägger jag objektet i matches och tillsist
+  efter loopen lämnar jag tillbaka alla träffarna: return matches;
+
+  Det viktiga är att Repository fortfarande inte vet vad den söker efter. findWhere(...) vet bara: "jag får ett villkor.
+  jag testar villkoret på varje T och sparar dem som ger true". Senare kan jag exempelvis skicka in ett villkor som
+  betyder "Transaction är en UTGIFT", då är det lambdan som känner till det villkoret, inte Repository.
