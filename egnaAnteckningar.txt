@@ -90,3 +90,42 @@
   Det viktiga är att Repository fortfarande inte vet vad den söker efter. findWhere(...) vet bara: "jag får ett villkor.
   jag testar villkoret på varje T och sparar dem som ger true". Senare kan jag exempelvis skicka in ett villkor som
   betyder "Transaction är en UTGIFT", då är det lambdan som känner till det villkoret, inte Repository.
+
+=============== Commit - Add generic repository =================
+
+* Skapa RepositoryTest under src/test/java och börja med JUnit 5. Skapar en ny Pacakage under test-java för att testkl-
+  asserna ska ligga i motsvarande package som klasserna jag testar. Skapar klassen RepositoryTest i det paketat.
+* Lägger till JUnit -dependenciet i pom.xml
+* Skriver första JUnit-testet med add(), om jag skapar ett tomt Repository, lägger till ett objekt med add() i det
+  Repositoryts lista, ska Repository innehålla exakt ett objekt.
+* Arrange - förbereder det som behövs för för testet: Jag behöver ett Repository. för dethär testet behöver jag inte
+  krångla med en riktig Transaction ännu, eftersom Repository är generisk kan jag testa det med String.
+  --> Repository<String> repository = new Repository<>();
+  betyder att jag skapar ett riktigt Repository-objekt i minnet. Klassen Repository<T> är bara beskrivningen av hur ett
+  Repository fungerar. När jag skriver Repository<String> bestämmer jag samtidigt att T ska vara String i just den här
+  Repository-objektet.
+  Min Repository-klass innehåller --> private final ArrayList<T> items = new ArrayList<>();
+  När T är String kan jag därför tänka att det för just det här objektet motsvarar en tom lista för Strings. Den är tom
+  för att jag precis skapade det här Repository-objektet.
+  Act - utför det jag vill testa, alltså i detta fall min egen add()-metod.
+  Assert - kontrollerar att resultatet blev vad jag förväntade mig. Jag skrev en 1 först för det var det jag förväntade
+  mig att få till svar, sen : repository.findAll().size() för att gå in i det repositoryt som jag skapade i Arrange-
+  delen, och använda metoden findAll() och på den size() för att se hur många objekt som finn inne i repository.
+* Kör min RepositoryTest i debug-läge.
+  Step Into --> jag vill gå in i metoden på denhär raden och se vad som händer där inne. (undersöka min egen kod)
+  Step Over --> kör metoden på denhär raden, men jag behöver inte se hur den fungerar inuti. Stanna på nästa rad i min
+  kod. (bara vill låta en färden java-metod göra sitt jobb)
+* Skriver ett test för att att testa ett gränsfall, ett naturligt gränsfall är ett helt tomt Repository. Frågan jag vill
+  att testet skall besvara är: om jag precis har skapat ett Repository och inte lagt till någonting, returnerar findAll()
+  då en tom lista? (@Test findAllShouldReturnEmptyListWhenRepositoryIsEmpty). Kör testet med grön pil jämte det. allt OK.
+* Skriver ett test där findAll() har flera objekt att lämna tillbaka, jag vill kontrollera om jag lägger in tre objekt
+  i Reopsitory så ska findAll() returnera alla tre. (@Test findAllShouldReturnAllItems)
+  Skillnad från förra testet (add()), när jag här testar findAll() så lägger jag in tre saker med add() och den delen
+  tillhör här i detta testet Arrange delen. Jag använder add() för att förbereda Repository inför det jag faktiskt vill
+  testa.
+  I detta test än så länge får jag bara tillbaka hur många objekt listan innehåller, jag får inte "vad" de innehåller
+  så det skall jag sedan förbättra med JUnit-assertion.
+* Nu lägger jag till (i assert-delen) att objekten på listans index skall hämtas. Det är fortfarande samma JUnit-
+  assertion, assertEquals(), men nu använder jag den för att jämföra själva innehållet också.
+
+=============== Commit - Add basic repository unit tests =================
