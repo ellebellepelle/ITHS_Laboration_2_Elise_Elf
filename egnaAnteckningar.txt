@@ -129,3 +129,12 @@
   assertion, assertEquals(), men nu använder jag den för att jämföra själva innehållet också.
 
 =============== Commit - Add basic repository unit tests =================
+
+* Nästa steg: findWhere(), där jag för första gången kommer använda Predicate<T> och en liten lambda.
+  Skapar ett normalfallet-test för findWhere()-metoden, jag testar med Integer för att det är lättare än att blanda in Transaction
+  och dess olika fält nu. Skapar ett repository-objekt och lägger in 3 värden, söker sedan på hur många värden som är 10
+  eller över,, 2 st ska va det och jag vill se vilka de värderna är,
+* Skapar ett gränsfall-test för findWhere() där jag kontrollerar vad som händer när inga värden uppfyller villkoret.
+  (senare kan repositoryt innehålla objekt som skall kontrolleras och inte värden som i mina test).
+
+=============== Commit - Add findWhere repository unit tests =================

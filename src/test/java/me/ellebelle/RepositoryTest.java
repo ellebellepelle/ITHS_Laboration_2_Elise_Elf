@@ -51,4 +51,36 @@ public class RepositoryTest {
         assertEquals("Två", result.get(1));
         assertEquals("Tre", result.get(2));
     }
+
+    @Test
+    void findWhereShouldReturnMatchingItems() {
+        // Arrange
+        Repository<Integer> repository = new Repository<>();
+        repository.add(5);
+        repository.add(10);
+        repository.add(20);
+
+        // Act
+        List<Integer> result = repository.findWhere(number -> number >= 10);
+
+        // Assert
+        assertEquals(2, result.size());
+        assertEquals(10, result.get(0));
+        assertEquals(20, result.get(1));
+    }
+
+    @Test
+    void findWhereShouldReturnEmptyListWhenNothingMatches() {
+        // Arrange
+        Repository<Integer> repository = new Repository<>();
+        repository.add(5);
+        repository.add(10);
+        repository.add(20);
+
+        // Act
+        List<Integer> result = repository.findWhere(number -> number > 100);
+
+        // Assert
+        assertTrue(result.isEmpty());
+    }
 }

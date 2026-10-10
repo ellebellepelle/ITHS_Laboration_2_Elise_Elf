@@ -18,7 +18,7 @@ public class Repository<T> {
         return items;
     }
 
-    // Metod som returnerar de objekt som uppfyller ett vit villkor. Returnerar en lista med träffarna.
+    // Metod som returnerar de objekt som uppfyller ett vist villkor. Returnerar en lista med träffarna.
     public List<T> findWhere(Predicate<T> condition) {
         List<T> matches = new ArrayList<>();
         for (T item : items) {
