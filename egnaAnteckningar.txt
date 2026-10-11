@@ -138,3 +138,33 @@
   (senare kan repositoryt innehålla objekt som skall kontrolleras och inte värden som i mina test).
 
 =============== Commit - Add findWhere repository unit tests =================
+
+* Skapar InvalidTransactionException-klass som validerar att användaren inte matar in 0 eller minus på amount, samt mitt
+  exception signalerar felet / beskriver vilket fel som har inträffat när valideringen upptäcker något ogilltiogt.
+  (Kan senare skriva ett JUnit test med assertThrows som bevisar att mitt exception faktiskt kastas.)
+* Min klass ärver från Javas färdiga RuntimeException, därmed blir min klass också ett exception som Java kan kasta med
+  throw.
+* Konstruktorn tar emot en String message, tex: throw new InvalidTransactionException("Beloppet måste vara större än 0");
+  När ett nytt InvalidTransactionException-objekt skapas kommer texten in i message. super(message); skickar sedan
+  meddelandet vidare till konstruktorn i RuntimeException, alltså superklassen. På så sätt fär mitt exception ett fel-
+  meddelande som senare kan visas eller loggas.
+* Eftersom min klass ärver från RuntimeException är mitt exception unchecked. Det betyder att Java inte kräver att jag
+  deklarerar det med throws eller fångar det med try/catch. Jag kan fortfarande fånga det med try/catch när jag vill
+  handtera felet. Hade jag iställer ärvt direkt från Exception hade det blivit ett checked exception, och då hade Java
+  krävt att jag hanterade eller deklarerade exceptionet.
+* I konstruktorn i min Transaction-record lägger jag valideringen amount <= 0. Om villkoret är sant kastas mitt
+  InvalidTransactionException. Konstruktorn i en record ser lite annorlunda ut än konstruktorn i en vanlig klass.
+* Min konstruktor i Transaction-recordet har inga () eftersom en record redan automatiskt skapar konstruktorn utifrån:
+  Transaction(String category, double amount, LocalDate date, TransactionType transactionType)
+  Därför behöver jag inte skriva alla parametrarna igen. public Transaction {...} är en compact constructor där jag kan
+  lägga kod som ska köras när en Transaction skapas. När jag sedan gör:
+  new Transaction("Mat", 500, LocalDate.now(), TransactionType.UTGIFT);
+  körs konstruktorn och kontrollerar amount. Är beloppet 500 går det bra. Är det ex o eller -500 kastas mitt
+  InvalidTransactionException.
+* Kör Build Project. Lyckades. Allt funkar.
+
+=============== Commit - Add transaction validation and custom exception =================
+(lagt till validering för transaktioner och ett eget undantag. skapat ett eget exception, InvalidTransactionException,
+i stället för att bara använda något av Javas färdiga exceptions.)
+==========================================================================================
+
