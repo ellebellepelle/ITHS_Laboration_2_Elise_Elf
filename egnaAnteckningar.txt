@@ -168,3 +168,50 @@
 i stället för att bara använda något av Javas färdiga exceptions.)
 ==========================================================================================
 
+* Skapar en ny test-klass TransactionTest, för att för att se hur assertThrows fungerar.
+  assertThrows -> jag förväntar min att den här koden ska kasta just InvalidTransactionException.
+  assertThrows(InvalidTransactonException.class, ...)
+  assertThrows betyder ungefär: "jag förväntar mig att den här koden ska kasta just InvalidTransactionException."
+  Koden som JUnit ska testa prova är:
+  () -> {
+        new Transaction(...);
+        }
+  Här dyker lambdan upp igen, läs delen som: "det här är koden assertThrows ska försöka köra."
+  Jag försöker alltså skapa:
+  new Transaction("Mat", 0, ...)
+  Men jag har precis skrivit i Transaction:
+  if (ammount <= 0) {
+        throw new InvalidTransactionException(...);
+        }
+  Eftersom amount är 0 ska exceptionet kastas.
+  Det lite bakvända med detta test är att ett exception här betyder att testet lyckades. Jag har juh utryckligen sagt
+  till JUnit att jag förväntar mig ett exception.
+  * Om inget exception kastas --> testet misslyckades.
+  * Om InvalidTransactionException kastas --> testet lyckades.
+* I testet är delen new Transaction(...) Act, eftersom det är det jag faktiskt testar, jag försöker skapa en Transection
+  med beloppet 0. (Act och Assert sitter nästan ihop.)
+  assertThrows(...) är Assert, eftersom det är där jag säger vad jag förväntar mig ska hända: jag förväntar mig att Act
+  kastar InvalidTransactionException.
+  Arrange är egentligen nästan obefintlig i just det här testet. Jag behöver inte skapa ett repository eller förbereda
+  några andra objekt innan testet. Testdatan ("Mat", 0, datumet och UTGIFT) ligger direkt i den kod som körs.
+* Arrange --> nästan inget behöver förberedas.
+  Act --> försök skapa Transaction med amount = 0.
+  Assert --> kontrollera att InvalidTransactionException kastas.
+* I just assertThrows är det väldigt vanligt att Act ligger inuti Assert, eftersom JUnit måste få den kod som ska köras
+  för att kunna kontrollera om den kastar rätt exception.
+* Testet funkade, nu vet jag att valideringen för gränsfallet 0 fungerar.
+* Skapar ett test för den andra ogiltiga situationen: negativt belopp. (shouldThrowExceptionWhenAmountIsNegative())
+  Detta testet testar alltså samma regel: if (amount <= 0). för om jag tex av misstag hade skrivit amount < 0 så hade
+  bara detta testet blivit grönt och det med kontroll av 0 hade blivit rött, på så sätt hjälper testerna mig att kontr-
+  ollera att gränsen verkligen är rätt.
+* Sedan skall jag testa att andra sidan av gränsen: att ett giltigt positivt belopp faktiskt får skapa en Transaction.
+  Det är viktigt att jag inte bara testar vad programmet ska neka, utan också vad det ska tillåta.
+* Skapar ett test för att ett positivt belopp funkar. Det här testet skiljer sig från de andra två. Nu förväntar jag mig
+  inget exception. Jag skapar en vanlig giltig Transaction med 500 och kontrollerar sedan att den faktiskt skapades med
+  beloppet 500.
+  Här blir Arrange-Act-Assert lite annorlunda igen. Skapandet av Transaction är framförallt Act. Sedan är:
+  assertEquals(500, transaction.amount()); --> Assert. "Jag förväntar mig att den skapade transaktionen har beloppet 500."
+  Jag har egentligen ingen Arrange här heller eftersom all information som behlva finns direkt när jag skapar transaktionen.
+
+=============== Commit - Add transaction validation tests =================
+
