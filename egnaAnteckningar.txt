@@ -55,7 +55,7 @@
   betyder den i praktiken "lägg till en Transaktion". När samma metod används på mitt Repository<User> betyder den
   istället "lägg till en User".
 
-  Det är alltså den stora poängen med generics finns: jag kriver Repository-klassen och dess grundläggande funktioner
+  Det är alltså den stora poängen med generics finns: jag skriver Repository-klassen och dess grundläggande funktioner
   en gång men kan återanvända dem för olika typer av objekt på ett typsäkert sätt.
 * Skapar ett fält i Repository<T> klasen som har datadypen ArrayList<T>, fältets variabel är items.
   Repository<T> är klassen som skall hantera objekten. items är ArrayListen innuti Repository där objekten faktiskt
@@ -214,4 +214,34 @@ i stället för att bara använda något av Javas färdiga exceptions.)
   Jag har egentligen ingen Arrange här heller eftersom all information som behlva finns direkt när jag skapar transaktionen.
 
 =============== Commit - Add transaction validation tests =================
+
+* Nu är delen med Transaction-validering + eget exception + tester med assertThrows klar.
+* Nu gör jag själva beräkningslogiken för budgeten, som även kommer testas med JUnit-tester.
+* Just nu kan mitt program lagra Transaction-objekt i ett Repository<Transaction>, men det kan ännu inte svara på
+  budgetfrågan: hur mycket pengar har jag totalt? Jag behöver skapa logik som får ex dessa transaktioner:
+  Lön 20 000 kr INKOMST, Mat 1 000 kr UTGIFT, Bensin 500 kr UTGIFT -> och räkna ihop dem.
+* Skapar klassen BudgetService. Lägger inte detta i Main för där vill jag bara ha min meny, jag vill att BudgetService
+  för budgetlogiken, det gör även så att beräkningarna blir enkalre att enhetstesta.
+* Alla mina transaktioner kommer ligga i ett Repository<Transaction>, därför behöver BudgetService ha tillgång till just
+  det repository som innehåller transaktionerna. Därför får BudgetService ett privat fält:
+  private final Repository<Transaction> repository;
+  och en konstruktor som tar emot repositoryt:
+  public BudgetService(Repository<Transaction> repository) {
+        this.repository = repository;
+  }
+* BudgetService skapar inte ett eget Repository, utan får ett redan existerand repository när BudgetService skapas.
+  Senare kan jag ex göra:   Repository<Transaction> repository = new Repository<>();
+                            BudgetService budgetService = new BudgetService(repository);
+  Då arbetar båda med samma repository. Om jag lägger en transaktion i repository, kan budgetService sedan komma åt den
+  när den ska göra sina beräkningar.
+* BudgetService har ett dependency på Repository<Transaction>. eftersom den behöver repositoryt för att kunna göra sitt
+  jobb. Att jag skickar in repositoryt genom konstruktorn är constructor dependency injection.
+* Skapar en metod (calculateBalance()) för beräkning total balans. Jag gör den först enkel med en loop för att sedan
+  kunna göra motsvarande med Stream API.
+* Skapar en test-klass BudgetServiceTest med test-metoden calculateBalanceShouldReturnZeroWhenRepositoryIsEmpty()
+* Skapar test-metoden calculateBalanceShouldAddIncomeAndSubtractExpence()
+* Skapar gränsfall-test-metoden calculateBalanceShouldReturnZeroWhenIncomeEqualsExpense(), kolla så balansen blir 0.
+
+=============== Commit - Add balance calculation and tests =================
+
 
