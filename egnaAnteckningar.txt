@@ -370,7 +370,40 @@ Ska göra:
 
 * Nästa steg: ändra calculateBalance() så att även den använde Stream API ist för nuvarande for-each-loop. Kommer bla
   använda mapToDouble() och sum().
+* repository.findAll().stream() -> hämtar alla transaktioner och gör att jag kan bearbeta dem med Stream API (som innan).
+* mapToDouble() -> tar varje transaktion och omvandlar den till ett double-värde.
+* Om transaktionen är en inkomst returnerar jag beloppet som ett positivt tal, om utgift returnerar jag beloppet som ett
+  negativt tal.
+* sum() -> summerar alla värden.
+* -transaction.amount() -> i min Transaction har jag bestämt att beloppet alltid måste vara större än 0, dvs både
+  INKOMST och UTGIFT sparas som positivt tal. Min TransactionType talar om ifall beloppet är in INKOMST eller UTGIFT.
+  Men när jag räknar ut saldot måste jag lägga till inkomster och dra bort utgifter, därför använder jag ett minus-
+  tecken framför beloppet utgifter.
+* mapToDouble() -> används för att bestämma om varje belopp ska vara positivt eller negativt, och sedan får .sum()
+  sumera allt.
+* I koden finns två olika return. Den inre return-satsen skickar tillbaka ett belopp från lambdauttrycket i mapToDouble().
+  Den yttre return-satsen skickar tillbaka det färdiga saldot från calculateBalance().
+* När jag kör -> repository.findAll().stream() -> skapas en Stream<Transaction> -> det betyder att min Stream innehåller
+  hela Transaction-objekt men när jag ska räkna ut saldot behöver jag inte längre kategorin eller datumet, jag behöver
+  bara beloppet och informationen om det är en inkomst eller utgift. Map går igenom varje Transction och tar fram ett
+  enda tal från den. För inkomst blir talet positivt och för utgift negativt.
+* Skillnaden mellan Stream<Transaction> och DoubleStream:
+  Stream<Transaction> innehåller hela transaktionsobjektet, den har ingen vanlig .sum()-metod som automatiskt vet vilka
+  belopp som ska returneras. DoubleStream innehåller däremot bara double-värden, den har en färdig metod som heter .sum()
+  och kan summera talen direkt. Det är alltså därför jag använder mapToDouble() för att gå från en Stream med hela objekt
+  till en Stream med enbart tal.
+* mapToDouble() är en metod som skapar och returnerar en DoubleStream. När jag skriver repository.findAll().stream() ->
+  får jag en Stream<Transaction>, alltså en Stream som innehåller mina Transaction-objekt. Men när jag sedan skriver ->
+  .mapToDouble(tranaction -> transaction.amount()) -> använder jag matoden mapToDouble() för att ta fram ett double-värde
+  från varje Transaction-objekt. Resultatet som mapToDouble() returnerar är en DoubleStream - så mapToDouble() är
+  metoden jag anropar, medan DoubleStream är datatypen på resultatet som metoden ger tillbaka. (precis som findAll() är
+  en metod som returnerar en List<Transaction>)
+* Kör min BudgetServiceTest-klass igen och allt funkade.
 
+=============== Commit - Refactor category totals using Stream API =================
+
+* Nästa steg: lägga till filtrering av transaktioner, så att användaren kan ex visa bara inkomster, bara utgifter eller
+  transaktioner från ett visst datum. Använder då också findWhere() metoden från Repository<T>.
 
 **
    Jag skapar ett repository-objekt som får en lista (items), där läggs alla transaktioner. En transaktion är gjord från

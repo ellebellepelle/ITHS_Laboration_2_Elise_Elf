@@ -3,6 +3,8 @@ package me.ellebelle;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
+import java.util.stream.Stream;
 
 public class BudgetService {
 
@@ -14,22 +16,46 @@ public class BudgetService {
         this.repository = repository;
     }
 
-    // Beräkningsmetod för total balans.
-    public double calculateBalance() {
-        double balance = 0;
+//    // Beräkningsmetod för total balans.
+//    public double calculateBalance() {
+//        double balance = 0;
+//
+//        // repository.findAll() --> hämtar alla transaktioner som finns i repositoryt.
+//        // forEach-loopen går igenom dem en i taget och lägger den aktuella transaktionen i variablen transaction.
+//        for (Transaction transaction : repository.findAll()) {
+//            // är TransactionType INKOMST läggs den till
+//            if (transaction.transactionType() == TransactionType.INKOMST) {
+//                balance += transaction.amount();
+//            }
+//            // är TransactionType UTGIFT dras den bort
+//            else if (transaction.transactionType() == TransactionType.UTGIFT) {
+//                balance -= transaction.amount();
+//            }
+//        }
+//        return balance;
+//    }
 
-        // repository.findAll() --> hämtar alla transaktioner som finns i repositoryt.
-        // forEach-loopen går igenom dem en i taget och lägger den aktuella transaktionen i variablen transaction.
-        for (Transaction transaction : repository.findAll()) {
-            // är TransactionType INKOMST läggs den till
+    // Beräkningsmetod för total balans med Stream API - uppdelad med separata variabler för att se vad som händer.
+    public double calculateBalance() {
+        // Hämtar alla transaktioner från Repository och skapar et Stream<Transaction>
+        Stream<Transaction> transactions = repository.findAll().stream();
+
+        // Går igenom varje Transaction och tar fram ett double-värde.
+        // Inkomster blir positiva och utgifter blir negativa.
+        // mapToDouble() returnerar en DoubleStream.
+        DoubleStream amounts = transactions.mapToDouble(transaction -> {
             if (transaction.transactionType() == TransactionType.INKOMST) {
-                balance += transaction.amount();
+                return transaction.amount();
             }
-            // är TransactionType UTGIFT dras den bort
-            else if (transaction.transactionType() == TransactionType.UTGIFT) {
-                balance -= transaction.amount();
+            else {
+                return -transaction.amount();
             }
-        }
+        });
+
+        // Sumerar alla tal i DoubleStream och sparar resultatet i balance
+        double balance = amounts.sum();
+
+        // Returnerar det färdiga saldot
         return balance;
     }
 
