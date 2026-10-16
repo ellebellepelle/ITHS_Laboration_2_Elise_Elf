@@ -244,4 +244,56 @@ i stället för att bara använda något av Javas färdiga exceptions.)
 
 =============== Commit - Add balance calculation and tests =================
 
+* Category som String (i Transaction-recordet)
+  Jag har valt att ha category som en String i stället för en enum. Fördelen är att användaren själv kan ange vilka
+  kategorier som ska finnas, ex: "Mat", "Hund", "Semester" etc.. Med en enum hade kategorierna i stället varit bestämda
+  i förväg i koden.
+  Nackdelen med String är att användaren kan skriva samma kategori på olika sätt, ex: "Mat", "mat", "MAT". Därför behöver
+  jag hantera/normalisera användarens indata så att samma kategori inte behandlas som flera olika kategorier.
+  (validering är ex att kontrollera att kategorin inte är tom, det kam jag med göra i samband.)
+  Jag kan ex omvandla kategorin till gemener med toLowerCase() när kategorier jämförs eller gruperas. Då blir "Mat",
+  "mat", "MAT" samma kategori.
+  Det är alltså en avvägning: String ger användaren större frihet att skapa egna kategorier, medan enum ger bättre
+  kontroll över vilka kategorier som är tillåtna.
+* Sammanställning av kategori. Gör så jag kan gruppera dem. Det gör jag med en struktur där en kategori hör ihop med en
+  summa genom att använda en del av Collections Framework: Map (Map<String, double>).
+  Map lagrar värden som nyckel --> värde. I mitt fall kommer det vara: "Mat" --> 800:- , "Bensin" --> 700:- osv tex.
+* Map jämfört med List:
+  En List ex en ArrayList, lagrar värden i en viss ordning och varje värde får ett index. Därför kan jag ex använda
+  list.get(0) för att hämta värdet på index 0. En Map ex en HashMap, lagrar i stället information som Key --> Value
+  (nyckel --> värde). Jag använder ex put() för att lägga in ett nyckel-värde-par och get() för att hämta ett värde med
+  hjälp av dess nyckel. Med categoryTotals.get("Mat") kan jag alltså hämta värdet som hör till nyckeln "Mat", utan att
+  behöva något index.
+  En Map kan inte ha flera separata värden med samma nyckel. Om "Mat" redan finns med värdet 500.0 och jag sedan använder
+  put("Mat", 300.0), skapas alltså inte ytterligare en "Mat". Det gamla värdet 500.0 skrivs över och ersätts med 300.0.
+  Om jag istället vill summera beloppen måste jag först hämta det befintliga värdet, lägga till det nya beloppet och
+  sedan använda put() för att spara den nya totalsumman. ex kan Mat -> 500 tillsammans med ytterligare 300 bli Mat -> 800.
+* Skapar metoden Map<String, Double> calculateCategoryTotals() i BudgetService-klassen. Metoden skapar en Map, returnerar
+  Map, går igenom alla transaktioner i repositoryt, har en for-each-loop som tar reda på vilken kategori den aktuella
+  transaktionen har, (+ hanterar användarinmatning,)
+* String category = transaction.category().toLowerCase();
+  hämtar kategorin från den Transaction som loopen befinner sig på och sparar den i variablen category. Om kategorin i
+  Transaction är "Mat" kommer variablen category alltså innehålla "mat". (toLowerCase() så alla mat Mat osv blir samma
+  nyckel i Map.)
+  double currentTotal = categoryTotals.getOrDefault(category, 0.0);
+  använder sedan värdet som finns i variablen category som nyckel. Om category just nu innehåller "mat" blir det alltså
+  i praktiken som att fråga efter categoryTotals.getOrDefault("mat", 0.0). Om nyckeln "mat" redan finns i min Map hämtas
+  värdet som hör till den och sparas i currentTotal. Om "mat" inte finns ännu returneras istället defaultvärdet 0.0.
+  På så sätt fungerar samma kod både första gången en kategori dyker upp och när kategorin redan finns.
+* Skapar test calculateCategoryTotalsShouldReturnEmptyMapWhenRepositoryIsEmpty()
+* Skapar test calculateCategoryTotalsShouldShouldAddAmountsFromSameCategory()
+* Skapar test calculateCategoryTotalsShouldHandleMultipleCategories()
+  --> som kontrollerar att meoden calculateCategoryTotals() kan hantera flera olika kategorier samtidigt.
+  Testet kontrollerar att Map-en innehåller rätt värden till sina nycklar och att det Map-en har tre kategorier trots
+  att jag la in fyra transaktioner.
 
+=============== Commit - Add category totals calculation and tests =================
+
+
+**
+   Jag skapar ett repository-objekt som får en lista (items), där läggs alla transaktioner. En transaktion är gjord från
+   Transaction-recordet och innehåller bla ett enum TransactionType, sen skickas det repositoryt med listan i med alla
+   transaktioner till konstruktorn i BudgetService när jag skapar ett budgetService-objekt och på så sätt får metoderna
+   calculateBalance() och calculateCategoryBalance() (som finns i budgetService) tag i den informationen (genom
+   repository.findAll()) och kan arbeta med den fast att jag inte skickar in den infon i metoderna.
+**
