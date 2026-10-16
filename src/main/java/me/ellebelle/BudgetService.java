@@ -2,6 +2,7 @@ package me.ellebelle;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class BudgetService {
 
@@ -32,25 +33,35 @@ public class BudgetService {
         return balance;
     }
 
+//    public Map<String, Double> calculateCategoryTotals() {
+//
+//        // skapa en tom Map som ska innehålla kategori -> totalsumma
+//        Map<String, Double> categoryTotals = new HashMap<>();
+//
+//        // för varje transaktion som finns i repositoryt..
+//        for (Transaction transaction : repository.findAll()) {
+//            // spara den kategorin (m små bokstäver) i category
+//            String category = transaction.category().toLowerCase();
+//            // currentTotal -> det som redan finns för kategorin i Map-en
+//            // getOrDefault -> om kategorin inte finns ännu används 0.0
+//            double currentTotal = categoryTotals.getOrDefault(category, 0.0);
+//            // transaction.amount() -> det nya beloppet
+//            // lägger ihop tidigare summa med det nya beloppet
+//            double newTotal = currentTotal + transaction.amount();
+//            // sparar kategorin och den nya totalsumman i Map-en
+//            categoryTotals.put(category, newTotal);
+//        }
+//        // returnerar Map-en med alla kategorier och deras totalsummor
+//        return categoryTotals;
+//    }
+
+    // Beräkna totalsumman för varje kategori med Stream API
     public Map<String, Double> calculateCategoryTotals() {
 
-        // skapa en tom Map som ska innehålla kategori -> totalsumma
-        Map<String, Double> categoryTotals = new HashMap<>();
-
-        // för varje transaktion som finns i repositoryt..
-        for (Transaction transaction : repository.findAll()) {
-            // spara den kategorin (m små bokstäver) i category
-            String category = transaction.category().toLowerCase();
-            // currentTotal -> det som redan finns för kategorin i Map-en
-            // getOrDefault -> om kategorin inte finns ännu används 0.0
-            double currentTotal = categoryTotals.getOrDefault(category, 0.0);
-            // transaction.amount() -> det nya beloppet
-            // lägger ihop tidigare summa med det nya beloppet
-            double newTotal = currentTotal + transaction.amount();
-            // sparar kategorin och den nya totalsumman i Map-en
-            categoryTotals.put(category, newTotal);
-        }
-        // returnerar Map-en med alla kategorier och deras totalsummor
-        return categoryTotals;
+        return repository.findAll().stream()
+                .collect(Collectors.groupingBy(
+                        transaction -> transaction.category().toLowerCase(),
+                        Collectors.summingDouble(transaction -> transaction.amount())
+                ));
     }
 }

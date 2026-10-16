@@ -289,6 +289,88 @@ i stället för att bara använda något av Javas färdiga exceptions.)
 
 =============== Commit - Add category totals calculation and tests =================
 
+************************************************************************************************************************
+Har gjort:
+* Skapat Maven.projektet och kopplat det till GitHub
+* Skapat Transaction och TransactionType
+* Skapat den generiska klassen Repository<T>
+* Skapat egen exception och validering av belopp
+* Skapat BudgetService med calculateBalance() och calculateCategoryTotals()
+* Skrivit JUnit-tester för Repository, Transaction och BudgetService
+* Övat på debuggern
+* Gjort flera commits för att visa utvecklingen
+************************************************************************************************************************
+Ska göra:
+* Stream API - Lära mig Streams och använda dem i beräkningarna
+* Filtrering och sortering - Kunna visa transaktioner efter ex datum och tid
+* Filhantering - Spara transaktioner i fil och läsa in dem igen när programmet startar
+* Felhantering - Hantera ex saknade eller felaktiga filer
+* Meny - Skapa programmets meny och låta användaren registrera och visa transaktioner
+* Loggning - Använda DEBUG, INFO, WARNING och ERROR (för VG)
+* Fler tester - Testa bla filhantering och felaktig inmatning
+* Debugging och README - Dokumentera en verklig bugg, hur jag hittade den och hur jag rättade den.
+                       - Skriva reflektion om generics och Stream API
+* Slutkontroll - Köra alla tester, kontrollera funktionerna och göra sista commits
+************************************************************************************************************************
+
+* Stream API - ett sätt att gå igenom och bearbeta värden i ex en ArrayList, utan att sj behöva skriva en vanlig for-loop.
+* I BudgetService har jag ex:
+  for (Transaction transaction : repository.findAll()) {
+    // Bearbeta transaktionen
+  }
+  Här går jag igenom alla transaktioner en i taget. Med Stream API kan jag ist skriva:
+  repository.findAll().stream()
+  Då skapar jag en Stream från listan med transaktioner. Jag kan sedan använda olika metoder för att ex filtrera,
+  sortera eller sumera dem.
+* En Stream är inte en ny lista som lagrar mina transaktioner, det är ett sätt att bearbeta transaktionerna som redan
+  finns i listan. Ex om mitt repository innehåller:
+  Mat - 500, Bensin - 300, Mat - 200, Hyra - 8000
+  Kan jag använda:
+  repository.findAll().stream()
+            .filter(transaction -> transaction.amount() > 300)
+            .toList();
+  Här sker tre saker:
+  * findAll() hämtar listan med transaktioner
+  * stream() skapar en Stream som kan bearbeta dem
+  * filter() väljer bara transaktioner där beloppet är större än 300. Slutligen samlar toList() resultatet i en lista.
+  Resultatet blir:
+  Mat - 500, Hyra - 8000
+* Använder Stream API i min calculateCategoryTotals() --> ersätter min for-each-loop med en Stream.
+* groupingBy() gör så att transaktionerna grupperas efter kategori
+* summingDouble() summerar beloppen inom varje grupp
+* Så jag får samma resultat som min nuvarande for-each-loop ger fast jag låter Stream API sköta grupperingen och
+  summeringen åt mig.
+* Skriver om min metod calculateCategoryTotals() med stream(), collect(), groupingBy() och summingDouble()
+  kör sedan mina befintliga JUnit-tester för att kontrollera att allt fortfarande fungerar.
+* Jag kommer skriva om calculateBalance() också med Stream API men eftersom jag precis har arbetat med Map och kategorier
+  samt att eftersom calculateCategoryTotals() använder både gruppering och summering så får jag lära mig två användnin-
+  gsområden för Stream API samtidigt. calculateBalance() är enklare att skriva med Stream API eftersom den bara behöver
+  räkna ihop inkomster och dra bort utgifter. Den behöver inte grupera något.
+* calculateCategoryTotals() --> tar bort for-each-loopen och ersätter den.
+  repository.findAll().stream() ->
+  findAll hämtar alla transaktioner från mitt Repository, och stream() skapar en stream / gör att jag kan bearbeta dem
+  med Stream API.
+  .collect(...)
+  collect() -> är en färdig metod i Stream API som samlar ihop resultatet av bearbetningen.
+  collect() -> skapar och fyller en Map med kategorierna och deras totalsummor. Jag sparar sedan den färdiga Map-en
+  i variabeln categoryTotals och returnerar den med return categoryTotals;.
+  Det är alltså collect() som använder instruktionerna fårn groupingBy() och summingDouble() för att skapa resultatet.
+  groupingBy(transaction -> transaction.category().toLowerCase()) -> bestämmer vilken kategori varje transaktion tillhör
+  (precis som tidigare omvandlar jag kategorin till små bokstäver).
+  Collectors.summingDouble(transaction -> transaction.amount()) -> summerar beloppen för transaktionerna inom vajre
+  kategori.
+  Jag behöver alltså inte längre skapa en tom HashMap med new HashMap<>(), använda getOrDefault() eller uppdatera
+  summorna med put(). Stream API sköter detta åt mig genom collect(), groupingBy() och summingDouble().
+  I den gamla metoden skapade och fyllde jag min Map själv. I den nya metoden skapar och fyller Java Map-en år mig.
+  Jag sparar sedan den färdiga Map-en i variablen categoryTotals och returnerar den med return categoryTotals;
+* Map är ett Interface, medan HashMap är en klass som implementerar Map. (som List och ArrayList)
+* Kör min BudgetServiceTest-klass fast nu med Stream-versionen i BudgetService-klassen och alla gick igenom.
+
+=============== Commit - Refactor category totals using Stream API =================
+
+* Nästa steg: ändra calculateBalance() så att även den använde Stream API ist för nuvarande for-each-loop. Kommer bla
+  använda mapToDouble() och sum().
+
 
 **
    Jag skapar ett repository-objekt som får en lista (items), där läggs alla transaktioner. En transaktion är gjord från
