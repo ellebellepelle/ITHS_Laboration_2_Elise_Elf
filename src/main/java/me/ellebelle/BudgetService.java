@@ -1,6 +1,7 @@
 package me.ellebelle;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
@@ -89,5 +90,16 @@ public class BudgetService {
                         transaction -> transaction.category().toLowerCase(),
                         Collectors.summingDouble(transaction -> transaction.amount())
                 ));
+    }
+
+    // Hittar alla med samma TransactionType
+    public List<Transaction> findByType(TransactionType type) {
+        return repository.findWhere(
+                // Kommande Lambda-uttryck består av två delar:
+                // transaction --> är lambdans egen parameter, den representerar den transaktion som ska undersökas
+                // transaction.transactionType() == type --> är konstrollen som ger true eller false
+                // Hela Lambdan motsvarar ett Predicate<Transaction> och tas emot av parametern condiction i findWhere()
+                transaction -> transaction.transactionType() == type
+        );
     }
 }

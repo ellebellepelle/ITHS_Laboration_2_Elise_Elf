@@ -65,11 +65,11 @@
   haft en Repository<User>, hade samma add() tagit emot en User.
 * Jag har en Repository-klass runt ArrayListen för att resten av programmet ska kunna arbeta genom mina Repository-
   metoder medan själva listan hålls privat.
-* Skapar en generisk metod, findAll(), som andra delar av programmet senare kommer behöva för att fråga Repositoryt: "vilka objekt
-  har du lagrat". Metoden skall alltså lämna tillbaka litan med alla objket. Returtypen blir List<T> för att metoden
-  lämnar tillbaka en lista med objekt. (samma typ av objekt som Repository arbetar med.) Om jag har Tepository<Transa-
-  ction>, kommer findAll() lämna tillbaka en lista med Transaktioner. Jag skriver List ist för ArrayList för att Array-
-  List implementerar List.
+* Skapar en generisk metod, findAll(), som andra delar av programmet senare kommer behöva för att fråga Repositoryt:
+  "vilka objekt har du lagrat". Metoden skall alltså lämna tillbaka litan med alla objket. Returtypen blir List<T> för
+  att metoden lämnar tillbaka en lista med objekt. (samma typ av objekt som Repository arbetar med.) Om jag har
+  Tepository<Transa-ction>, kommer findAll() lämna tillbaka en lista med Transaktioner. Jag skriver List ist för
+  ArrayList för att Array-List implementerar List.
 * Skapar en generisk metod, findWhere(...), som bara ger de objekt som uppfyller ett vit villkor. I min budgethanterare
   kanske Repository innehåller 50 transaktioner, jag vill kanske kunna hitta alla UTGIFTER, alla INKOMSTER eller alla
   transaktioner över 1000 kr. Jag vill inte bygga 3 olika metoder för i Repositoryt för detta, Repository vet inte ens
@@ -131,9 +131,9 @@
 =============== Commit - Add basic repository unit tests =================
 
 * Nästa steg: findWhere(), där jag för första gången kommer använda Predicate<T> och en liten lambda.
-  Skapar ett normalfallet-test för findWhere()-metoden, jag testar med Integer för att det är lättare än att blanda in Transaction
-  och dess olika fält nu. Skapar ett repository-objekt och lägger in 3 värden, söker sedan på hur många värden som är 10
-  eller över,, 2 st ska va det och jag vill se vilka de värderna är,
+  Skapar ett normalfallet-test för findWhere()-metoden, jag testar med Integer för att det är lättare än att blanda in
+  Transaction och dess olika fält nu. Skapar ett repository-objekt och lägger in 3 värden, söker sedan på hur många
+  värden som är 10 eller över,, 2 st ska va det och jag vill se vilka de värderna är,
 * Skapar ett gränsfall-test för findWhere() där jag kontrollerar vad som händer när inga värden uppfyller villkoret.
   (senare kan repositoryt innehålla objekt som skall kontrolleras och inte värden som i mina test).
 
@@ -400,10 +400,25 @@ Ska göra:
   en metod som returnerar en List<Transaction>)
 * Kör min BudgetServiceTest-klass igen och allt funkade.
 
-=============== Commit - Refactor category totals using Stream API =================
+=============== Commit - Refactor balance calculation using Stream API =================
 
+* Klar med saldoberäkningen.
 * Nästa steg: lägga till filtrering av transaktioner, så att användaren kan ex visa bara inkomster, bara utgifter eller
-  transaktioner från ett visst datum. Använder då också findWhere() metoden från Repository<T>.
+  transaktioner från ett visst datum. Använder då findWhere() metoden från Repository<T>.
+* Skapar metoden findByType(TransactionType type) i BudgetService-klassen.
+  metoden tar emot en parameter som heter type, av datatypen TransactionType. Den kan alltså vara INKOMST eller UTGIFT.
+  I min metod findByType() anropar jag min egen metod findWhere(), som finns i klassen Repository.
+  transaction -> transaction.transactionType() == type
+  --> är ett lambdauttryck som kontrollerar varje transaction. Om transactionens typ är samma som den typ jag söker
+  efter blir villkoret true, och transaktionen kommer med i resultatet.
+  Om jag ex anropar:
+  budgetService.findByType(TransactionType.UTGIFT);
+  --> får jag tillbaka en List<Transaction> med bara utgifter. Här återanvänder jag min egen findWhere() istället för
+  att skriva en ny for-each-loop som filtrerar transaktionerna.
+* Skapar ett test för denna i BudgetServiceTest --> findByTypeShouldReturnIncome()
+
+=============== Commit - Add transaction type filtering and test =================
+
 
 **
    Jag skapar ett repository-objekt som får en lista (items), där läggs alla transaktioner. En transaktion är gjord från

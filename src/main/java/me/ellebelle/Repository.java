@@ -18,7 +18,9 @@ public class Repository<T> {
         return items;
     }
 
-    // Metod som returnerar de objekt som uppfyller ett vist villkor. Returnerar en lista med träffarna.
+    // Metod som returnerar de objekt som uppfyller ett visst villkor. Returnerar en lista med träffarna.
+    // (Predicate<T> condiction) --> condiction innehåller ett villkor som kan testas på objekt av typen T
+    // hela Lambda-uttrycket tas emot av parametern condiction
     public List<T> findWhere(Predicate<T> condition) {
         List<T> matches = new ArrayList<>();
         for (T item : items) {

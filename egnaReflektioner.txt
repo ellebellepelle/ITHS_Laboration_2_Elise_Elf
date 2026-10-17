@@ -1,0 +1,30 @@
+* Skulle börjat med menyn i main för att få en bättre helhetsbild av vad jag skapar.
+  ( som jag gjorde med laboration 1, där började jag med menyn och det var lättare. )
+* Skulle startat i main med att skriva vad jag behövde, tex: skapa ett Repository och ett
+  BudgetService-objekt för att få klarhet i att programmet bara kommer använda EN person.
+  Övertänkte och fastnade i att budgethanteraren skulle kunna hantera flera olika användare.
+* Enligt uppgiftens instruktioner stå det "låter en användare registrera", samt att meny-förslaget
+  tyder på att det bara ska vara en användare, men jag tolkade det som att där skulle kunna vara
+  flera användare, därav tyckte jag att det var komplicerat att få ihop mina metoder 😅.
+  Alltså tex om en användare skall söka efter alla sina utgifter så fattade jag inte hur just den
+  användaren skulle få åtkomst till sitt Repository med Transaktioner om jag hade flera.. 🤦🏼‍♀️
+* Skulle lagt betydligt mer tid på att reda ut vad uppgiften innebar innan jag startade med koden.
+  Men har svårt att tyda uppgiftsinstruktioner över lag.
+* Om mer tid hade funnits hade jag gått igenom utbildningsmaterialet fler gånger innan jag startade
+  med uppgiften.
+* Har svårt att greppa hur alla delar i ett prgram skall byggas ihop. Har däremot lättare för den teoretiska förståelsen.
+* Utgår ifrån att det viktigast är ATT jag lär mig och inte HUR jag lär mig.
+* Jag vet hur man skriver en klass med fält, konstruktor, metoder etc. Vad Static innebär, Final, generisk-klass,
+  abstract-klass, interface och allt med @Override. (Samt @Overload med parametrar etc.) Jag har kunskap kring
+  åtkomstidentifierare, variabler, datatyper (primitiva och refferens), operatorer, flödeskontroll, loopar med mera.
+  Jag vet hur jag anropar metoder på klasser eller objekt, jag vet vad oop och polymorfism innebär och att Object är
+  sub-klass till alla klaser. Jag vet typ hur Stream API funkar, att Predicate<> kontrollerar ett visst villkor,
+  och en del om Collections med List, Set och Map. Jag kan en del om versionshantering med Git, Testning med JUnit,
+  debug, try/catch.. MEN jag har svårt att sätta ihopa program, främst för att jag behöver lära mig att ha tålamod till
+  grundarbetet för att tänka ut vilka klasser och metoder etc som jag behöver för att allt ska hänga ihop.
+* Jag behöver definitivt lägga mer tid på att koda!!
+* Har svårt för när allt heter samma ord över allt. Klassen Repository heter Repository sen gör jag ett objekt av den
+  klassen och det heter också repository bla bla.. 🙇🏼‍♀️ Jag har valt att döpa de så för att det är så jag har förstått
+  det som att man ska göra men när jag lär mig så är det svårt att hålla reda på, hade velat döpa de till
+  anv1sRepository eller eliseTransaktionerRepository etc.. för att fatta att jag kan ha flera och samtidigt ha lättare
+  att förstå vad den refferensen innehåller.

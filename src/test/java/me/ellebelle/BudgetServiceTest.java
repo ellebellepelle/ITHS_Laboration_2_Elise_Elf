@@ -3,6 +3,7 @@ package me.ellebelle;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -137,5 +138,24 @@ public class BudgetServiceTest {
         assertEquals(300, result.get("bensin"));
         assertEquals(8000, result.get("hyra"));
         assertEquals(3, result.size());
+    }
+
+    @Test
+    void findByTypeShouldReturnOnlyIncome() {
+        // Arrange
+        Repository<Transaction> repository = new Repository<>();
+        BudgetService budgetService = new BudgetService(repository);
+
+        repository.add(new Transaction("Lön", 20000, LocalDate.now(), TransactionType.INKOMST));
+        repository.add(new Transaction("Bensin", 300, LocalDate.now(), TransactionType.UTGIFT));
+        repository.add(new Transaction("Mat", 200, LocalDate.now(), TransactionType.UTGIFT));
+        repository.add(new Transaction("Hyra", 8000, LocalDate.now(), TransactionType.UTGIFT));
+
+        // Act
+        List<Transaction> transactions = budgetService.findByType(TransactionType.INKOMST);
+
+        // Assert
+        assertEquals(1, transactions.size());
+        assertEquals(TransactionType.INKOMST, transactions.get(0).transactionType());
     }
 }
