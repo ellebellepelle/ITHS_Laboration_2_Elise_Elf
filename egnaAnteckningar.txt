@@ -419,6 +419,12 @@ Ska göra:
 
 =============== Commit - Add transaction type filtering and test =================
 
+* Skapar datumfiltrering i BudgetService --> typ samma som findByType() men använder bla equals() ist för ==
+* Skapar inget test för denna metod.
+
+=============== Commit - Add transaction date filtering =================
+
+
 
 **
    Jag skapar ett repository-objekt som får en lista (items), där läggs alla transaktioner. En transaktion är gjord från

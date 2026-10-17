@@ -1,5 +1,6 @@
 package me.ellebelle;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,6 +101,13 @@ public class BudgetService {
                 // transaction.transactionType() == type --> är konstrollen som ger true eller false
                 // Hela Lambdan motsvarar ett Predicate<Transaction> och tas emot av parametern condiction i findWhere()
                 transaction -> transaction.transactionType() == type
+        );
+    }
+
+    // Hittar alla transaktioner via datum
+    public List<Transaction> findByDate(LocalDate date) {
+        return repository.findWhere(
+                transaction -> transaction.date().equals(date)
         );
     }
 }

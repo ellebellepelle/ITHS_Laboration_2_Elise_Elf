@@ -28,3 +28,4 @@
   det som att man ska göra men när jag lär mig så är det svårt att hålla reda på, hade velat döpa de till
   anv1sRepository eller eliseTransaktionerRepository etc.. för att fatta att jag kan ha flera och samtidigt ha lättare
   att förstå vad den refferensen innehåller.
+* Svårt att veta alla automatiska metoder som finns i ex ett racord som jag ska använda.
