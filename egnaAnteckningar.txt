@@ -424,9 +424,27 @@ Ska göra:
 
 =============== Commit - Add transaction date filtering =================
 
-* Startar med menyn i Main. 
+* Startar med menyn i Main.
 
 =============== Commit - Starts with menu in main =================
+
+* Provkörde min meny och fick ett exception (ett runtime exception):
+  Exception in thread "main" java.lang.IlleagalArgumentException: No enum constant me.ellebelle.TransactionType.inkomst...
+* Meddelandet förklarar att jag inte har en enum som heter inkomst. Jag debuggar Main.java rad 37 för där finns kod som
+  jag själv har skrivit.
+* När jag debuggade och kom till rad 37 valde jag Step Over och då kördes hela raden eftersom den innehåller både
+  IO.readln() och valueOf() och då hann programmet läsa in inkomst, försöka omvandla texten och krascha. Så därför
+  gör jag om debugen igen och väljer Step Into ist. Jag får nu välja vilken metod jag vill gå in i (eftersom det finns
+  flera). Jag väljer valueOf() och innan debuggen kan köra den raden måste Java först utföra IO.readln() för att få
+  texten som skall skickas in så jag skriver inkomst. Nu kommer jag vidare och intelliJ öppnar TransactionType.java
+  för att metoden valueOf() fick texten "inkomst" som argument men samtidigt ser jag att mitt enum kan bara ta emot
+  INKOMST och UTGIFT. Jag har alltså hittat orsaken till felet med hjälp av debuggern: valueOf() försöker hitta inkomst
+  men det värdet finns inte i min enum eftersom java är casesensitive.
+* EV lägg senare till kontroll för användarinmatning så det bara går skriva INKOMST eller UTGIFT, ev gör ett menyval
+  där användaren får välja mellan de två alternativen.
+
+=============== Commit - Document enum input bug and debugging process =================
+
 
 **
    Jag skapar ett repository-objekt som får en lista (items), där läggs alla transaktioner. En transaktion är gjord från
