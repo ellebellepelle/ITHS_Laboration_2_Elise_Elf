@@ -424,7 +424,9 @@ Ska göra:
 
 =============== Commit - Add transaction date filtering =================
 
+* Startar med menyn i Main. 
 
+=============== Commit - Starts with menu in main =================
 
 **
    Jag skapar ett repository-objekt som får en lista (items), där läggs alla transaktioner. En transaktion är gjord från
