@@ -29,3 +29,11 @@
   anv1sRepository eller eliseTransaktionerRepository etc.. för att fatta att jag kan ha flera och samtidigt ha lättare
   att förstå vad den refferensen innehåller.
 * Svårt att veta alla automatiska metoder som finns i ex ett racord som jag ska använda.
+* Filhanteringen gick betydligt bättre eftersom jag gjorde den delen direkt efter lektionen som handlade om det. 👍🏼
+
+
+
+
+********* FÖRBÄTTRINGAR *********
+* Se till att jag inte kan göra UTGIFTS transaktoner om det inte finns pengar på kontot.
+* Låta användaren få två val INKOMST eller UTGIFT vid registrering av transaktionstyp.

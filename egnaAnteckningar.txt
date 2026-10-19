@@ -445,6 +445,34 @@ Ska göra:
 
 =============== Commit - Document enum input bug and debugging process =================
 
+* Skriver färdigt menyn i main och gör metoder till alla menyval.
+* showSaldoAndSumOfCategory() --> skall visa saldo (om jag har 0 eller hur mycket jag har på kontot) samt alla
+  kategoriers sammanställning (ex om mat 300 och mat 400 har handlats så skall mat = 700 visas)
+  Jag använder nu min BudgetService-klass där jag har gjort dessa metoder :
+  * calculateBalance()
+  * calculateCategoryTotals()
+* Skapar ett objekt av BudgetService för att kunna anropa dess metoder på objektet för att BudgetService har en
+  konstruktor som tar emot mitt repository när jag gör objktet och där med får tillgång till alla transaktioner.
+  Jag hade kunnat göra BudgetService metoderna statiska men då hade jag behövt skicka med mitt repository-objekt
+  som en parameter varje gång jag anropade metoden. (båda sätten funkar).
+* filtrateTransactions() --> skall filtrera transaktioner efter transaktions typ och datum (var för sig).
+  Jag använder nu igen min BudgetService-klass där jag har gjort dessa metoder:
+  * findByType()
+  * findByDate()
+* Använder samma budgetService-objekt.
+* Gör en undermeny i metoden för att användaren ska kunna välja vad den vill se. samt välja vilket datum som hen vill
+  hämta transaktioner från.
+
+* Skapar klassen TransacktionFileHandler.
+* Skapar metoden createFolder() och saveTransactions(List<Transaction> transactions)
+* saveToFile() -> skickar min repository till saveTransactions(List<Transaction> transaction) i TransactionFileHandler-
+  klassen.
+* Skapar metoden loadTransactions()
+* Lägger in inläsningen i main från start så att repositoryt får in filen med befintliga transaktioner om de finns några.
+
+=============== Commit - Implement CSV persistence and transaction loading =================
+
+
 
 **
    Jag skapar ett repository-objekt som får en lista (items), där läggs alla transaktioner. En transaktion är gjord från
