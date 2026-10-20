@@ -520,8 +520,38 @@ Ska göra:
 
 =============== Commit - Handle invalid transaction input and fix exception crash =================
 
+* Felhantering i filtrateTransactions() med att skriva in fel datum
+  * Provkör programmet och skriver in fel datum när jag ska söka efter transaktion.
+  * Satte brakepoint i Main.java på LocalDate.parse() - startar debug. (skrev 2026-10-80)
+  * I Threads & Variables:
+  input = "3" - jag har valt att filtrera efter datum
+  dateInput = "2026-10-80" - det felaktiga datumet skrevs in
+  filtrateTransactions:135 - metoden och raden där programmet har stannat
+  * Problemet - oktober har inte 80 dagar, men Java har inte försökt tolka datumet än eftersom raden inte har körts.
+  * Jag väljer "Step into" så Java försöker köra LocalDate.parse(datumInput) men eftersom datumet int är gilltigt
+  kastas ett DateTimeParseException.
+  * I konsollen står:
+  java.time.format.DateTimeParseException - Java kunde inte omvandla texten till ett gilltigt datum.
+  * Caused by: java.time.DateTimeException: Invalid value for DayOfMonth...:80 --> 80 dagar är inte tillåtet.
+  * I anropskedjan ser jag Main.filtrateTransactions(Main.java:135) --> visar vilken rad i min kod som felet uppstod.
+  * Jag har ingen catch som fångar DateTimeParseException så programmet avslutas och jag får "Process finished with
+  code 1".
+  * Jag behöver en try/catch runt LocalDate.parse(dateInput) så att ett felmeddelande skrivs ut och programmet går
+  tillbaka till menyn ist för att krascha.
+  * Eftersom jag inte har skapat nån egen exception här så går jag inte in i javas inbyggda metoder så som jag gick in
+  i min egen metod för att debugga.
+* Hantera felet.
+  * I case 3 i menyn för val 4 (i vanliga menyn) i filtrateTransaction()- metoden i Main-klassen deklarerar jag variablen
+  LocalDate date; utanför try för att jag också sedna använder den utanför tyr i budgetService.findByDate(date). Sen
+  lägger jag en try runt date = LocalDate.parse(dateInput); och skriver ut felmeddelande och retur i catchen.
+  * Testar programmet igen med ett fel och ett rätt datum och det funkar.
+  * Kan dock skriva in ett tatum som är längre fram i tiden, jag får så klart inte fram några transaktioner men
+  åtgärdar ändå för att få ett felmeddelande att jag inte kan ha transaktioner som inte ännu har ett datum som varit.
+  * Ser att jag inte fåt nått meddelande om min lista inte har några transaktioner med det datumet och lägger till ett
+  meddelande i case 3 i filtrateTransaction()- metoden med en if-sats (lägger där till att jag vill ha de hämtade
+  transaktionerna i en lista List<Transaction> transactions ... ) för att se om listan är tom så skrivs meddelandet ut.
 
-
+=============== Commit - Improve date filtering and error handling =================
 
 
 

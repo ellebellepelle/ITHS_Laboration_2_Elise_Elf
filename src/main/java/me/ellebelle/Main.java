@@ -1,6 +1,7 @@
 package me.ellebelle;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
 
@@ -131,11 +132,30 @@ public class Main {
                 break;
 
             case "3":
-                String dateInput = IO.readln("Ange datum (ÅÅÅÅ-MM-DD): ");
-                LocalDate date = LocalDate.parse(dateInput);
+                LocalDate date;
 
-                budgetService.findByDate(date)
-                        .forEach(System.out::println);
+                while (true) {
+                    String dateInput = IO.readln("Ange datum (ÅÅÅÅ-MM-DD): ");
+
+                    try {
+                        date = LocalDate.parse(dateInput);
+                        if (date.isAfter(LocalDate.now())) {
+                            IO.println("Datumet har inte varit än. Ange dagens eller ett tidigare datum.");
+                            continue;
+                        }
+                        break;
+                    } catch (DateTimeParseException e) {
+                        IO.println("Du skrev fel datum 📅 : " + e.getMessage());
+                    }
+                }
+
+                List<Transaction> transactions = budgetService.findByDate(date);
+
+                if (transactions.isEmpty()) {
+                    IO.println("Det finns inga transaktioner registrerade på detta datum.\n");
+                } else {
+                    transactions.forEach(System.out::println);
+                }
                 break;
 
             case "4":
