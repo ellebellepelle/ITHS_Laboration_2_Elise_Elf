@@ -4,8 +4,11 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class Main {
+
+    private static final Logger logger = Logger.getLogger(Main.class.getName());
 
     private static final Repository<Transaction> anvandarensRepositoryTransaktionslista = new Repository<Transaction>();
     private static final BudgetService budgetService = new BudgetService(anvandarensRepositoryTransaktionslista);
@@ -65,6 +68,7 @@ public class Main {
             summa = Double.parseDouble(IO.readln("Vilken summa? "));
         } catch (NumberFormatException e) {
             IO.println("Felaktigt belopp, ange ett tal.");
+            logger.warning("Felaktigt belopp, ange ett tal: " + e.getMessage());
             return;
         }
 
@@ -79,6 +83,7 @@ public class Main {
             );
         } catch (IllegalArgumentException e) {
             IO.println("Ogiltig transaktionstyp, ange INKOMST eller UTGIFT.");
+            logger.warning("Ogiltig transaktionstyp: " + e.getMessage());
             return;
         }
 
@@ -89,6 +94,7 @@ public class Main {
         } catch (InvalidTransactionException e) {
             // fångar felet om beloppet är 0 eller negativt
             IO.println("Kunde inte lägga till transaktionen: " + e.getMessage());
+            logger.warning("Kunde inte lägga till transaktionen: " + e.getMessage());
             return;
         }
 
@@ -146,6 +152,7 @@ public class Main {
                         break;
                     } catch (DateTimeParseException e) {
                         IO.println("Du skrev fel datum 📅 : " + e.getMessage());
+                        logger.warning("Ogiltigt datum: " +  e.getMessage());
                     }
                 }
 

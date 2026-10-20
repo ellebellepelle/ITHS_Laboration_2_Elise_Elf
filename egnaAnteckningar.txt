@@ -442,6 +442,13 @@ Ska göra:
   men det värdet finns inte i min enum eftersom java är casesensitive.
 * EV lägg senare till kontroll för användarinmatning så det bara går skriva INKOMST eller UTGIFT, ev gör ett menyval
   där användaren får välja mellan de två alternativen.
+* Hantera felet (åtgärdades senare i addTransaction()).
+  * La till .trim().toUpperCase() på användarens inmatning innan den skickas till valueOf().
+  .trim() --> tar bort mellansag
+  .toUpperCase() --> omvandla till stora bokstäver
+  * Om anv skriver något som inte finns i min enum (ex hej) kommer valueOf() fortfarande att kasta IllegalArgumentException
+  la därför till try/catch runt valueOf() så om anv skriver ogilltig transaktionstyp fångar catchen IllegalArgumentException
+  det och skriver felmeddelande. Sen avslutas addTransaction() med return och anv kommer till huvudmenyn ist för krasch.
 
 =============== Commit - Document enum input bug and debugging process =================
 
@@ -552,6 +559,27 @@ Ska göra:
   transaktionerna i en lista List<Transaction> transactions ... ) för att se om listan är tom så skrivs meddelandet ut.
 
 =============== Commit - Improve date filtering and error handling =================
+
+* LOGGNING
+  * TransactionFileHandler-klassen skapar jag ett logger-objekt, i metoden createFolder(), saveTransactions() och
+  loadTransactions() lägger jag till loggerWarning() så en varning registreras från loggern.
+  * Testar min loggning genom att öppna min Budgethanteraren\Transactions.csv och ändrar 50.0 till abc.
+  Kör Main-Run och efterom filen läses in direkt vid start så får jag fel i konsollen jag får både min IO-utskrift och
+  min loggning-warning.
+  * MEN menyn och programmet fortsätter så skulle nu användaren välja att spara igen så sparas det felaktiga värdet
+  eftersom den ursprungliga filen skrivs över.
+  * Ändrar tillbaka min csv-fil till korrekt och testkör igen och det funkar som det ska.
+  * Kanske åtgärdar detta sen...
+
+  * Felaktig användarinmatning i Main.java, skapar även här en logger. (för att rätt klass ska visas)
+  * addTransaction() och filtrateTransaction() får logger.warning
+  * Testar loggningen genom att köra programmet och lägger in abc ist för siffror när jag gör transaktion och jag får
+  mina felmeddelanden som önskat och programmet kraschar inte utan jag får fortsätta med menyn.
+
+* Kör alla testklasse och de funkar.
+
+=============== Commit - Add basic logging for input and file errors =================
+
 
 
 
