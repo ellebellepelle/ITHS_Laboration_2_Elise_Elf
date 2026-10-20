@@ -10,16 +10,24 @@ transaktioner kan hen välja att spara dessa till en fil som automatiskt skapas 
 
 Teknik:
 Programmet använder:
-Collections Framework i form av List och Map. 
-Generics (i både klass och metoder) för att kunna återanvända Repository<T> klassen till flera olika typer.
-(Detta utnyttjas dock inte i programmet då det enbart arbetar med Transaction.)
-Undantagshantering med try/catch för att fånga exceptions (både Javas egna samt ett eget som jag har skapat).
-Filhantering som gör att datan kan sparas till fil.
-Enhetstester med JUnit för att kunna kontrollera delar av koden utan att behöva köra hela programmet. (Detta utnytjas 
+* Collections Framework i form av List och Map. 
+* Generics (i både klass och metoder) för att kunna återanvända Repository<T> klassen (samt dess metoder) till flera olika 
+typer. (Detta utnyttjas dock inte i programmet då det enbart arbetar med Transaction.)
+Om mitt program även hade haft användare skulle jag först behöva ha någon typ som bekriver en användare, ex en
+User-klsas eller en User-record. Den kanske hade innehållit information som namn och användar ID. Jag skulle då kunna
+skapa ett annat Repository där T istället är User. Det Repositoryt skulle ha sin egen ArrayList som bara innehåller
+User-objket. Jag har alltså inte en anda ArrayList där Uers och Transactions balndas. Jag har två olika Repositor-
+objekt som båda bygger på samma generiska Repository<T>-klass, men där T har fått olika betydelse.
+* Undantagshantering med try/catch för att fånga exceptions (både Javas egna samt ett eget som jag har skapat).
+* Filhantering som gör att datan kan sparas till fil.
+* Enhetstester med JUnit för att kunna kontrollera delar av koden utan att behöva köra hela programmet. (Detta utnytjas 
 på ett bra sätt i början av kodningen när metoder skrivs och det ännu inte finns ett färdigt program samt att jag 
 slipper skriva ut felmeddelanden i konsollen).
-Debugger och Loggning för att programmeraren skall kunna felsöka.
-Stream API för att förenkla koden och tex kunna använda metoder ist för att gå igenom kod med loopar.
+* Debugger och Loggning för att programmeraren skall kunna felsöka.
+* Stream API för att förenkla koden och tex kunna använda metoder ist för att gå igenom kod med loopar.
+I BudgetService-klassen finns exempel på kod som först är skriven utan Stream API där en Map görs manuellt och sedan 
+används for-loop och metoder för att lösa uppgiften. (den är sedan utkommenterad)
+Stream API ger kortare kod och tydligare vad som skall beräknas.
 
 Köra programmet:
 Programmet är skrivet i Java och använder Maven.
@@ -34,7 +42,9 @@ För att spara sina transaktioner väljer användaren alternativ 5 i menyn och m
 den inte finns.
 
 Testning, Loggning och felsökning:
-Programmet använder loggning i form av Logger med nivån WARNING vid felaktig användarinmatning och filfel.
+Programmet använder loggning i form av Logger med nivån WARNING, INFO och SEVERE (ERROR). INFO --> när transaktioner 
+läggs till, sparas eller läses in. WARNING --> vid felaktig användarinmatning och felaktiga CSV-rader. SEVERE -->
+vid filfel som hindrar inläsning eller sparning.
 *******************************************************************************************************************
 
 * Provkörde min meny och fick ett exception (ett runtime exception):

@@ -584,3 +584,12 @@ Ska göra:
 * Testkör hela programmet med alla meny alternativ och fixar småsaker som radbryt etc.
 
 =============== Commit - Add README and finalize project =================
+
+* Lägger till loggning för VG
+* Kompleterar README.md för VG
+* Kör ett mvn test så jag ser att testerna fungerar genom Maven och inte bara IntelliJ.
+Har ej installerat så gör genom maven - lifecycle i intelliJ
+* (installerar mvn) kör mvn test i terminalen och de funkar. 
+
+=============== Commit - Improve logging and update README for VG requirements =================
+

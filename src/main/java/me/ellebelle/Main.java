@@ -90,6 +90,7 @@ public class Main {
         try {
             Transaction transaction = new Transaction(category, summa, date, transactionType);
             anvandarensRepositoryTransaktionslista.add(transaction);
+            logger.info("Transaktion tillagd: " + transaction);
 
         } catch (InvalidTransactionException e) {
             // fångar felet om beloppet är 0 eller negativt

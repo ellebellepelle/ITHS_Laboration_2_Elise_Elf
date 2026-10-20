@@ -32,7 +32,7 @@ public class TransactionFileHandler {
             return true;
         } catch (IOException e) {
             IO.println("Kunde inte skapa mappen: " + e.getMessage());
-            logger.warning("kunde inte skapa mappen: " + e.getMessage());
+            logger.severe("kunde inte skapa mappen: " + e.getMessage());
             // meddelar den anropade metoden att det misslyckades
             return false;
         }
@@ -56,7 +56,7 @@ public class TransactionFileHandler {
         } catch (IOException e) {
             // visar felmeddelande om filen inte kan skapas eller tömmas
             IO.println("Kunde inte förbereda filen: " + e.getMessage());
-            logger.warning("Kunde inte förbereda filen: "  + e.getMessage());
+            logger.severe("Kunde inte förbereda filen: "  + e.getMessage());
             return; // avbryter sparningen om något gick fel
         }
         for (Transaction transaction : transactions) {
@@ -72,10 +72,11 @@ public class TransactionFileHandler {
             } catch (IOException e) {
                 // felmeddelande om transaktion inte kan sparas
                 IO.println("Kunde inte spara transaktionen: " + e.getMessage());
-                logger.warning("Kunde inte spara transaktionen: "  + e.getMessage());
+                logger.severe("Kunde inte spara transaktionen: "  + e.getMessage());
                 return; // avbryter sparning om nått går fel
             }
         }
+        logger.info("Transaktioner sparade till CSV-filen. Antal: " + transactions.size());
     }
 
     public static List<Transaction> loadTransactions() {
@@ -100,6 +101,7 @@ public class TransactionFileHandler {
                 // kontrollera att csv-raden innehåller exakt 4 delar
                 if (parts.length !=4) {
                     IO.println("Felaktig rad i CSV-filen: " + line);
+                    // använder warning här för att programmet kan hoppa över den och fortsätta
                     logger.warning("Felaktig rad i CSV-filen: " + line);
                     continue;
                 }
@@ -130,8 +132,9 @@ public class TransactionFileHandler {
             }
         } catch (IOException e) {
             IO.println("Kunde inte läsa filen:" + e.getMessage());
-            logger.warning("Kunde inte läsa filen: " + e.getMessage());
+            logger.severe("Kunde inte läsa filen: " + e.getMessage());
         }
+        logger.info("Antal inlästa transaktioner: " +  transactions.size());
 
         // returnerar listan med transactioner som lästs in från csv-filen
         return transactions;
