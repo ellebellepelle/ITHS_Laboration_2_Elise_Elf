@@ -33,7 +33,7 @@
   klassen blir återanvändbar eftersom jag kan lagra viken objekttyp jag vill som jag bestämmer när jag använder den.
 * En Repository<T>  är en generisk klass som jag skapar för att kunna lagra och hantera objekt utan att Repostiory-
   klassen behöver vara skriven för en bestämd typ av objekt. Inuti Repository har jag en ArrayList<T>, och det är i
-  den listen som objekten faktiskt lagras. När jag senare skapar och använder ett Repository<Transaction> bestämmer
+  den listan som objekten faktiskt lagras. När jag senare skapar och använder ett Repository<Transaction> bestämmer
   jag att <T> ska betyda Transaction för just det Repository-objektet. ArrayListen i den Repositoryt kommer därför
   bara innehålla Transaction-objekt. Den första transaktionen hamnar i listan, sendan kan nästa transaktion läggas
   till osv. Java ser samtidigt till att jag inte av misstag kan lägga in ex ett User-objekt i just den listan,
@@ -51,7 +51,7 @@
   hur många objekt som finns.
 
   Efterom metoderna arbetar med T behöver jag inte skriva en särskilld addTransaction och sedan en nästan identisk
-  addUser. Jag skriver den generelle add-metoden en gång i Repository<T>. När den används på mitt Repoitory<Transaction>
+  addUser. Jag skriver den generella add-metoden en gång i Repository<T>. När den används på mitt Repoitory<Transaction>
   betyder den i praktiken "lägg till en Transaktion". När samma metod används på mitt Repository<User> betyder den
   istället "lägg till en User".
 
@@ -68,7 +68,7 @@
 * Skapar en generisk metod, findAll(), som andra delar av programmet senare kommer behöva för att fråga Repositoryt:
   "vilka objekt har du lagrat". Metoden skall alltså lämna tillbaka litan med alla objket. Returtypen blir List<T> för
   att metoden lämnar tillbaka en lista med objekt. (samma typ av objekt som Repository arbetar med.) Om jag har
-  Tepository<Transa-ction>, kommer findAll() lämna tillbaka en lista med Transaktioner. Jag skriver List ist för
+  Repository<Transaction>, kommer findAll() lämna tillbaka en lista med Transaktioner. Jag skriver List ist för
   ArrayList för att Array-List implementerar List.
 * Skapar en generisk metod, findWhere(...), som bara ger de objekt som uppfyller ett vit villkor. I min budgethanterare
   kanske Repository innehåller 50 transaktioner, jag vill kanske kunna hitta alla UTGIFTER, alla INKOMSTER eller alla
@@ -114,7 +114,7 @@
 * Kör min RepositoryTest i debug-läge.
   Step Into --> jag vill gå in i metoden på denhär raden och se vad som händer där inne. (undersöka min egen kod)
   Step Over --> kör metoden på denhär raden, men jag behöver inte se hur den fungerar inuti. Stanna på nästa rad i min
-  kod. (bara vill låta en färden java-metod göra sitt jobb)
+  kod. (bara vill låta en färdig java-metod göra sitt jobb)
 * Skriver ett test för att att testa ett gränsfall, ett naturligt gränsfall är ett helt tomt Repository. Frågan jag vill
   att testet skall besvara är: om jag precis har skapat ett Repository och inte lagt till någonting, returnerar findAll()
   då en tom lista? (@Test findAllShouldReturnEmptyListWhenRepositoryIsEmpty). Kör testet med grön pil jämte det. allt OK.
@@ -146,7 +146,7 @@
   throw.
 * Konstruktorn tar emot en String message, tex: throw new InvalidTransactionException("Beloppet måste vara större än 0");
   När ett nytt InvalidTransactionException-objekt skapas kommer texten in i message. super(message); skickar sedan
-  meddelandet vidare till konstruktorn i RuntimeException, alltså superklassen. På så sätt fär mitt exception ett fel-
+  meddelandet vidare till konstruktorn i RuntimeException, alltså superklassen. På så sätt får mitt exception ett fel-
   meddelande som senare kan visas eller loggas.
 * Eftersom min klass ärver från RuntimeException är mitt exception unchecked. Det betyder att Java inte kräver att jag
   deklarerar det med throws eller fångar det med try/catch. Jag kan fortfarande fånga det med try/catch när jag vill
@@ -168,7 +168,7 @@
 i stället för att bara använda något av Javas färdiga exceptions.)
 ==========================================================================================
 
-* Skapar en ny test-klass TransactionTest, för att för att se hur assertThrows fungerar.
+* Skapar en ny test-klass TransactionTest, för att se hur assertThrows fungerar.
   assertThrows -> jag förväntar min att den här koden ska kasta just InvalidTransactionException.
   assertThrows(InvalidTransactonException.class, ...)
   assertThrows betyder ungefär: "jag förväntar mig att den här koden ska kasta just InvalidTransactionException."
@@ -176,7 +176,7 @@ i stället för att bara använda något av Javas färdiga exceptions.)
   () -> {
         new Transaction(...);
         }
-  Här dyker lambdan upp igen, läs delen som: "det här är koden assertThrows ska försöka köra."
+  Här dyker lambdan upp igen, "det här är koden assertThrows ska försöka köra."
   Jag försöker alltså skapa:
   new Transaction("Mat", 0, ...)
   Men jag har precis skrivit i Transaction:
@@ -576,18 +576,11 @@ Ska göra:
   * Testar loggningen genom att köra programmet och lägger in abc ist för siffror när jag gör transaktion och jag får
   mina felmeddelanden som önskat och programmet kraschar inte utan jag får fortsätta med menyn.
 
-* Kör alla testklasse och de funkar.
+* Kör alla testklasser och de funkar.
 
 =============== Commit - Add basic logging for input and file errors =================
 
+* Skapar README.md
+* Testkör hela programmet med alla meny alternativ och fixar småsaker som radbryt etc.
 
-
-
-
-**
-   Jag skapar ett repository-objekt som får en lista (items), där läggs alla transaktioner. En transaktion är gjord från
-   Transaction-recordet och innehåller bla ett enum TransactionType, sen skickas det repositoryt med listan i med alla
-   transaktioner till konstruktorn i BudgetService när jag skapar ett budgetService-objekt och på så sätt får metoderna
-   calculateBalance() och calculateCategoryBalance() (som finns i budgetService) tag i den informationen (genom
-   repository.findAll()) och kan arbeta med den fast att jag inte skickar in den infon i metoderna.
-**
+=============== Commit - Add README and finalize project =================

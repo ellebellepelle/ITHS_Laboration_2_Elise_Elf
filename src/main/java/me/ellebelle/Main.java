@@ -99,9 +99,9 @@ public class Main {
         }
 
         if (transactionType == TransactionType.INKOMST) {
-            IO.println("Din transaktion är tillagd. Vad duktig du är som har tjänat egna pengar. 👏🏼👏🏼");
+            IO.println("Din transaktion är tillagd. Vad duktig du är som har tjänat egna pengar. 👏🏼👏🏼 \n");
         } else if (transactionType == TransactionType.UTGIFT) {
-            IO.println("Din transaktion är tillagd. Grattis till att ha spernderat ytterligare lite 😈");
+            IO.println("Din transaktion är tillagd. Grattis till att ha spernderat ytterligare lite 😈\n");
         }
     }
 

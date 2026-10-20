@@ -37,3 +37,7 @@
 ********* FÖRBÄTTRINGAR *********
 * Se till att jag inte kan göra UTGIFTS transaktoner om det inte finns pengar på kontot.
 * Låta användaren få två val INKOMST eller UTGIFT vid registrering av transaktionstyp.
+(fixade ist felhantering här)
+* Bättre felhantering vid inmatning av fel summa vid skapande av transaktion.
+* Utveckla menyval 3 (visa saldo och sammanställning per kategori) kunde varit betydligt tydigare.
+* Fått en tom rad efter filtrering av transaktionerna har skrivits ut.
