@@ -58,12 +58,38 @@ public class Main {
 
     private static void addTransaction() {
         String category = IO.readln("Vilken kategori vill du lägga till en transaktion för? ");
-        double summa = Double.parseDouble(IO.readln("Vilken summa? "));
-        LocalDate date = LocalDate.now();
-        TransactionType transactionType = TransactionType.valueOf(IO.readln("INKOMST eller UTGIFT? "));
+        double summa;
+        try {
+            // försök omvandla inmatning till tal
+            summa = Double.parseDouble(IO.readln("Vilken summa? "));
+        } catch (NumberFormatException e) {
+            IO.println("Felaktigt belopp, ange ett tal.");
+            return;
+        }
 
-        Transaction transaction = new Transaction(category, summa, date, transactionType);
-        anvandarensRepositoryTransaktionslista.add(transaction);
+        LocalDate date = LocalDate.now();
+
+        TransactionType transactionType;
+        try {
+            // input omvandlas till enumvärde
+            transactionType = TransactionType.valueOf(
+                    // kontroll med ta bort mellanslag och till stora bokstävr
+                    IO.readln("INKOMST eller UTGIFT? ").trim().toUpperCase()
+            );
+        } catch (IllegalArgumentException e) {
+            IO.println("Ogiltig transaktionstyp, ange INKOMST eller UTGIFT.");
+            return;
+        }
+
+        try {
+            Transaction transaction = new Transaction(category, summa, date, transactionType);
+            anvandarensRepositoryTransaktionslista.add(transaction);
+
+        } catch (InvalidTransactionException e) {
+            // fångar felet om beloppet är 0 eller negativt
+            IO.println("Kunde inte lägga till transaktionen: " + e.getMessage());
+            return;
+        }
 
         if (transactionType == TransactionType.INKOMST) {
             IO.println("Din transaktion är tillagd. Vad duktig du är som har tjänat egna pengar. 👏🏼👏🏼");
